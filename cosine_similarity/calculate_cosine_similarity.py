@@ -9,12 +9,10 @@ import datetime
 cpu_count = min(16, os.cpu_count()) #os.cpu_count()
 path_to_psite_changes = 'changed_phosphopeptides_sample.txt'
 list_timepoint = ['1M', '3M', '6M']
-significance_threshold = 0.05
 
-def init(_d, _threshold, _list_timepoint):
-    global DF, THRESHOLD, TIME_POINT
+def init(_d, _list_timepoint):
+    global DF, TIME_POINT
     DF = _d
-    THRESHOLD = _threshold
     TIME_POINT = _list_timepoint
 
 def psite2vec(psite):
@@ -22,8 +20,7 @@ def psite2vec(psite):
     x = DF.loc[DF.Psite_ID==psite,:]
     for i in range(x.shape[0]):
         idx_tp = TIME_POINT.index(x.time_point[i])
-        if x.q[i] < THRESHOLD:
-            v[idx_tp] = x.mean_ratio[i]
+        v[idx_tp] = x.mean_ratio[i]
     return psite, v
 
 def similarity_cos(x,y):
@@ -51,7 +48,7 @@ if __name__ == '__main__':
 
     print(" > calculate cos_similarity")
     from multiprocessing import Pool
-    pool = Pool(cpu_count, initializer=init, initargs=(psite_changes, significance_threshold, list_timepoint))
+    pool = Pool(cpu_count, initializer=init, initargs=(psite_changes, list_timepoint))
     
     import itertools
     vector_similarity = pool.map(sim_wrapper, itertools.combinations(p_sites, 2))
