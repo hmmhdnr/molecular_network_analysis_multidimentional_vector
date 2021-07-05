@@ -1,1 +1,1 @@
-# molecular_network_analysis_multidimentional_vector
+# dynamic molecular network analysis based on multidimentional vector space model
