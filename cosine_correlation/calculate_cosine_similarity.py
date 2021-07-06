@@ -10,6 +10,8 @@ cpu_count = min(16, os.cpu_count()) #os.cpu_count()
 path_to_psite_changes = 'changed_phosphopeptides_sample.txt'
 list_timepoint = ['1M', '3M', '6M']
 
+correlation_threshold = 0.9
+
 def init(_d, _list_timepoint):
     global DF, TIME_POINT
     DF = _d
@@ -55,7 +57,7 @@ if __name__ == '__main__':
 
     similarity = pd.DataFrame(vector_similarity, columns=['site1', 'site2', 'cos_sim'])
     possible_edges = similarity.loc[~np.isnan(similarity.cos_sim),:]
-    candidate_edges = possible_edges.loc[np.abs(possible_edges.cos_sim)>0.9,:]
+    candidate_edges = possible_edges.loc[np.abs(possible_edges.cos_sim)>correlation_threshold,:]
     similarity.to_csv("cos_similarity_all_pairs.tsv", sep='\t')
     possible_edges.to_csv("cos_similarity_possible_edges.tsv", sep='\t')
     candidate_edges.to_csv("cos_similarity_candidates.tsv", sep='\t')
